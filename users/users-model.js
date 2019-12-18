@@ -6,8 +6,10 @@ module.exports = {
   findUserBy,
 };
 
-function allUsers() {
-  return db('users').select('username', 'department');
+function allUsers(department) {
+  return db('users')
+    .select('username', 'department')
+    .where({department});
 }
 
 function addUser(userData) {
