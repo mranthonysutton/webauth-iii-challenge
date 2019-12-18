@@ -74,13 +74,11 @@ router.post('/login', validateUserCredentials, (req, res) => {
       // Need to grab the password of the username that was used to login, and check if the hashed password and the password the user provided match
       // If the user matches, sets a session of the user object to allow access to restricted routes
       if (user && bcrypt.compareSync(password, user.password)) {
-        // saves a session for the user credentials
-        req.session.user = user;
-
         // sets a header authorization token
         const token = signToken(user);
         res.set('authorization', token);
 
+        // sends the token to the client
         res.status(200).json({token, message: `Welcome ${user.username}`});
       } else {
         res.status(401).json({message: 'Invalid credentials were provided.'});
@@ -115,6 +113,7 @@ function signToken(user) {
   const payload = {
     user_id: user.id,
     username: user.username,
+    department: user.department,
   };
 
   const secret = process.env.JWT_SECRET || 'secretkey';

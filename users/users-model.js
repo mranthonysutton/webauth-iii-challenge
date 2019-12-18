@@ -7,7 +7,7 @@ module.exports = {
 };
 
 function allUsers() {
-  return db('users');
+  return db('users').select('username', 'department');
 }
 
 function addUser(userData) {
@@ -16,13 +16,19 @@ function addUser(userData) {
     .then(ids => {
       const [id] = ids;
 
-      return findUserBy({id});
+      return returnUserAfterLogin({id});
     });
 }
 
 function findUserBy(filter) {
   return db('users')
-    .select('id', 'username', 'password')
+    .where(filter)
+    .first();
+}
+
+function returnUserAfterLogin(filter) {
+  return db('users')
+    .select('id', 'username', 'department')
     .where(filter)
     .first();
 }
